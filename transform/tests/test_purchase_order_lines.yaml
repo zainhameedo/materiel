@@ -1,0 +1,16 @@
+# Lateness: a received line is late by receipt - promise; an open line is
+# measured against as_of (2026-09-30), so it keeps getting later until it lands.
+test_lateness:
+  model: core.purchase_order_lines
+  inputs:
+    staging.purchase_order_lines:
+      - {po_line_id: L1, po_number: PO1, part_id: P1, supplier_id: S1, order_date: 2026-06-01, promised_date: 2026-07-01, received_date: 2026-06-28, qty_ordered: 10, qty_received: 10, qty_rejected: 0, unit_price_usd: 5.00}
+      - {po_line_id: L2, po_number: PO1, part_id: P1, supplier_id: S1, order_date: 2026-06-01, promised_date: 2026-07-01, received_date: 2026-07-11, qty_ordered: 4, qty_received: 4, qty_rejected: 1, unit_price_usd: 5.00}
+      - {po_line_id: L3, po_number: PO2, part_id: P2, supplier_id: S2, order_date: 2026-08-01, promised_date: 2026-09-20, received_date: null, qty_ordered: 2, qty_received: 0, qty_rejected: 0, unit_price_usd: 100.00}
+  outputs:
+    query:
+      partial: true
+      rows:
+        - {po_line_id: L1, days_late: -3, is_on_time: true, is_received: true, extended_value_usd: 50.00, receipt_month: 2026-06-01}
+        - {po_line_id: L2, days_late: 10, is_on_time: false, is_received: true, extended_value_usd: 20.00, receipt_month: 2026-07-01}
+        - {po_line_id: L3, days_late: 10, is_on_time: false, is_received: false, extended_value_usd: 200.00, receipt_month: 2026-09-01}

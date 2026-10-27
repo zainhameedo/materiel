@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+warehouse/
+export/
+transform/.cache/
+transform/logs/
+logs/
+.pytest_cache/

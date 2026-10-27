@@ -1,0 +1,17 @@
+# One unit delivered mid-August, down Aug 25 -> Sep 4, down again from Sep 25
+# with the repair still open at as_of. Repairs must be clipped to each month.
+test_readiness_interval_clipping:
+  model: analysis.fleet_readiness_monthly
+  inputs:
+    core.assets:
+      - {serial_number: K-1, product_id: P-KES, delivered_on: 2026-08-16}
+    core.maintenance_events:
+      - {maintenance_event_id: M1, product_id: P-KES, opened_on: 2026-08-25, closed_on: 2026-09-04}
+      - {maintenance_event_id: M2, product_id: P-KES, opened_on: 2026-09-25, closed_on: null}
+  outputs:
+    query:
+      rows:
+        # August: 16 days in service (16th-31st), down 25th-31st = 7 days.
+        - {product_id: P-KES, month: 2026-08-01, asset_days: 16, asset_days_down: 7, availability: 0.5625}
+        # September: 30 days; down 1st-3rd (3) + 25th-30th (6) = 9 days.
+        - {product_id: P-KES, month: 2026-09-01, asset_days: 30, asset_days_down: 9, availability: 0.7}

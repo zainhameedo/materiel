@@ -1,0 +1,25 @@
+name: pipeline
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"  # weekly, so dependency drift shows up before a reviewer finds it
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - name: Land, transform, export (Flyte, local executor)
+        run: uv run pyflyte run src/materiel/pipeline.py pipeline
+      - name: Lint models
+        run: cd transform && uv run sqlmesh lint
+      - name: Estimator tests
+        run: uv run pytest -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: materiel-export
+          path: export/materiel.json

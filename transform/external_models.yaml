@@ -1,0 +1,82 @@
+- name: '"materiel"."erp"."assets"'
+  columns:
+    serial_number: TEXT
+    product_id: TEXT
+    work_order_id: TEXT
+    delivered_on: DATE
+    customer: TEXT
+  gateway: local
+- name: '"materiel"."erp"."bom"'
+  columns:
+    product_id: TEXT
+    part_id: TEXT
+    qty_per_unit: BIGINT
+  gateway: local
+- name: '"materiel"."erp"."maintenance_events"'
+  columns:
+    maintenance_event_id: TEXT
+    serial_number: TEXT
+    opened_on: DATE
+    closed_on: DATE
+    failed_part_id: TEXT
+    failure_mode: TEXT
+  gateway: local
+- name: '"materiel"."erp"."part_sources"'
+  columns:
+    part_id: TEXT
+    supplier_id: TEXT
+    allocation_share: DOUBLE
+  gateway: local
+- name: '"materiel"."erp"."parts"'
+  columns:
+    part_id: TEXT
+    part_name: TEXT
+    category: TEXT
+    standard_cost_usd: DOUBLE
+    nominal_lead_time_days: BIGINT
+    is_flight_critical: BOOLEAN
+  gateway: local
+- name: '"materiel"."erp"."programs"'
+  columns:
+    product_id: TEXT
+    product_name: TEXT
+    description: TEXT
+    build_cycle_days: BIGINT
+    monthly_rate: BIGINT
+  gateway: local
+- name: '"materiel"."erp"."purchase_order_lines"'
+  columns:
+    po_line_id: TEXT
+    po_number: TEXT
+    part_id: TEXT
+    supplier_id: TEXT
+    order_date: DATE
+    promised_date: DATE
+    received_date: DATE
+    qty_ordered: BIGINT
+    qty_received: BIGINT
+    qty_rejected: BIGINT
+    unit_price_usd: DOUBLE
+  gateway: local
+- name: '"materiel"."erp"."supplier_program_enrollment"'
+  columns:
+    supplier_id: TEXT
+    enrolled_on: DATE
+  gateway: local
+- name: '"materiel"."erp"."suppliers"'
+  columns:
+    supplier_id: TEXT
+    supplier_name: TEXT
+    state: TEXT
+    is_small_business: BOOLEAN
+  gateway: local
+- name: '"materiel"."erp"."work_orders"'
+  columns:
+    work_order_id: TEXT
+    product_id: TEXT
+    planned_start: DATE
+    planned_end: DATE
+    actual_end: DATE
+    blocked_by_part_id: TEXT
+    status: TEXT
+  gateway: local
