@@ -34,9 +34,13 @@ def transform(tables: list[str]) -> int:
     tests = ctx.test()
     if not tests.wasSuccessful():
         raise RuntimeError("SQLMesh unit tests failed")
-    # New data, same code: apply any model changes, then rebuild everything
-    # downstream of the refreshed sources. Audits run as each model builds.
-    ctx.plan(auto_apply=True, no_prompts=True, restate_models=["core.*", "analysis.*"])
+    # First run (a fresh clone, or CI): build everything. Later runs: new data,
+    # same code, so apply any model changes and rebuild everything downstream
+    # of the refreshed sources. Audits run as each model builds.
+    if ctx.state_reader.get_environment("prod") is None:
+        ctx.plan(auto_apply=True, no_prompts=True)
+    else:
+        ctx.plan(auto_apply=True, no_prompts=True, restate_models=["core.*", "analysis.*"])
     n = len(ctx.models)
     ctx.close()  # release the DuckDB file for the export step
     return n
